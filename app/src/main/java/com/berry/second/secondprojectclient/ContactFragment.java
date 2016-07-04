@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.berry.second.secondprojectclient.dummy.DummyContent;
-import com.berry.second.secondprojectclient.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.berry.second.secondprojectclient.person.MyPersonRecyclerViewAdapter;
+import com.berry.second.secondprojectclient.person.Person;
 
 /**
  * A fragment representing a list of Items.
@@ -67,7 +65,7 @@ public class ContactFragment extends Fragment implements MyPersonRecyclerViewAda
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyPersonRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyPersonRecyclerViewAdapter(Person.ITEMS, mListener));
         }
         return view;
     }
