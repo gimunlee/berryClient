@@ -21,16 +21,22 @@ import android.widget.GridView;
 import android.widget.Toast;
 import android.support.design.widget.FloatingActionButton;
 
+import com.amazonaws.Response;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 
 ///**
@@ -128,6 +135,17 @@ public class GalleryFragment extends Fragment {
                         writer.write("\n");
                         writer.close();
                         outputStream.close();
+
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+                        File f = new File(imgDecodableString);
+
+                        Future uploading = Ion.with(getActivity())
+                                .load("http://seodongmin.com:10900/upload")
+                                .setMultipartFile("image", f)
+                                .asString();
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
                         gridView = (GridView) getView().findViewById(R.id.gridView);
                         gridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, getData());
                         gridView.setAdapter(gridAdapter);
