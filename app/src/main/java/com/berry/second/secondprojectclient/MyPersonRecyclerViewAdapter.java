@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.berry.second.secondprojectclient.ItemFragment.OnListFragmentInteractionListener;
 import com.berry.second.secondprojectclient.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -19,21 +18,15 @@ import java.util.List;
 public class MyPersonRecyclerViewAdapter extends RecyclerView.Adapter<MyPersonRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
 
-    public interface OnListFragmentInteractionListener {
-        public void onPersonSelected(int pos) ;
-    }
-
-    public MyPersonRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyPersonRecyclerViewAdapter(List<DummyItem> items) {
         mValues = items;
-        mListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_person, parent, false);
         return new ViewHolder(view);
     }
 
