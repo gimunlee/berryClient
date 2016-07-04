@@ -6,9 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.berry.second.secondprojectclient.person.PersonListViewAdapter;
 import com.berry.second.secondprojectclient.person.PersonHelper;
@@ -49,6 +51,8 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        Log.d("gimun","PersonHelper.setup");
+        PersonHelper.setup(this.getContext());
     }
 
     @Override
@@ -57,15 +61,63 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
         View view = inflater.inflate(R.layout.fragment_person_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+//        if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new PersonListViewAdapter(context,PersonHelper.mItems/*, mListener*/));
+            PersonHelper.setAdapter((PersonListViewAdapter)recyclerView.getAdapter());
+//        }
+        {
+            Button button = (Button) view.findViewById(R.id.nowButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PersonHelper.addItemWithTime();
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.saveButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PersonHelper.writeCurrentList();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.refreshButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PersonHelper.updateFromJson();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.clearButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PersonHelper.clearList();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.fromSeverButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("gimun","update");
+                    new PersonHelper().updateFromServer();
+                }
+            });
         }
         return view;
     }

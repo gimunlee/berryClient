@@ -46,9 +46,9 @@ public class PersonListViewAdapter extends RecyclerView.Adapter<PersonListViewAd
             holder.mThumbnailView.setImageDrawable(mContext.getDrawable(R.drawable.facebook_no_profile_pic));
         else
             holder.mThumbnailView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.facebook_no_profile_pic));
-        holder.mNameView.setText(value.name);
-        holder.mEmailView.setText(value.email);
-        holder.mPhoneView.setText(value.phone);
+        holder.mNameView.setText(value.getName());
+        holder.mEmailView.setText(value.getEmail());
+        holder.mPhoneView.setText(value.getPhone());
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
