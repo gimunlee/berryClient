@@ -11,15 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.berry.second.secondprojectclient.person.MyPersonRecyclerViewAdapter;
-import com.berry.second.secondprojectclient.person.Person;
+import com.berry.second.secondprojectclient.person.PersonHelper;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class ContactFragment extends Fragment implements MyPersonRecyclerViewAdapter.onPersonAdapterListener {
+///**
+// * A fragment representing a list of Items.
+// * <p/>
+// * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+// * interface.
+// */
+public class ContactFragment extends Fragment /*implements MyPersonRecyclerViewAdapter.onPersonAdapterListener*/ {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
@@ -65,7 +65,7 @@ public class ContactFragment extends Fragment implements MyPersonRecyclerViewAda
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyPersonRecyclerViewAdapter(Person.ITEMS, mListener));
+            recyclerView.setAdapter(new MyPersonRecyclerViewAdapter(PersonHelper.mItems/*, mListener*/));
         }
         return view;
     }
@@ -100,7 +100,7 @@ public class ContactFragment extends Fragment implements MyPersonRecyclerViewAda
 //     */
 //    public interface OnListFragmentInteractionListener {
 //        // TODO: Update argument type and name
-//        void onListFragmentInteraction(DummyItem item);
+//        void onListFragmentInteraction(Person item);
 //    }
     public void onPersonSelected() {
     }

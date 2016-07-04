@@ -7,20 +7,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.berry.second.secondprojectclient.R;
-import com.berry.second.secondprojectclient.person.Person.DummyItem;
 
 import java.util.List;
 
 ///**
-// * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+// * {@link RecyclerView.Adapter} that can display a {@link Person} and makes a call to the
 // * specified {@link OnListFragmentInteractionListener}.
 // * TODO: Replace the implementation with code for your data type.
 // */
 public class MyPersonRecyclerViewAdapter extends RecyclerView.Adapter<MyPersonRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<PersonHelper.Person> mValues;
 
-    public MyPersonRecyclerViewAdapter(List<DummyItem> items) {
+    public MyPersonRecyclerViewAdapter(List<PersonHelper.Person> items) {
         mValues = items;
     }
 
@@ -35,7 +34,7 @@ public class MyPersonRecyclerViewAdapter extends RecyclerView.Adapter<MyPersonRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).name);
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -58,7 +57,7 @@ public class MyPersonRecyclerViewAdapter extends RecyclerView.Adapter<MyPersonRe
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public PersonHelper.Person mItem;
 
         public ViewHolder(View view) {
             super(view);
