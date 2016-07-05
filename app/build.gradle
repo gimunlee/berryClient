@@ -31,4 +31,8 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
     compile 'com.koushikdutta.ion:ion:2.+'
 
+    compile 'com.facebook.android:facebook-android-sdk:4.+'
+    repositories {
+        mavenCentral()
+    }
 }

@@ -42,7 +42,9 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by q on 2016-06-29.
  */
 public class DetailsActivity extends ActionBarActivity {
-
+    private static final String port = "10900";
+    private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
+    private static final String urlTestUserQuery = "?fid=gaianofc";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,6 @@ public class DetailsActivity extends ActionBarActivity {
         titleTextView.setText(title_p[title_p.length-1].split("[.]")[0]);//title_parse[title_parse.length-1].split(".")[0]
 
         ImageView imageView = (ImageView) findViewById(R.id.image);
-        Toast.makeText(this, imageurl, Toast.LENGTH_LONG).show();
         try {
             URL url = new URL(imageurl);
             Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
@@ -74,7 +75,7 @@ public class DetailsActivity extends ActionBarActivity {
 
                     try {
 
-                        URL url = new URL("http://seodongmin.com:10900/B/delete");
+                        URL url = new URL(urlPrefix + "/B/delete" + urlTestUserQuery);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                         conn.setRequestMethod("POST");
                         conn.setDoInput(true);

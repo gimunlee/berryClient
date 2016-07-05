@@ -69,6 +69,9 @@ public class GalleryFragment extends Fragment {
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
     int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 202;
+    private static final String port = "10900";
+    private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
+    private static final String urlTestUserQuery = "?fid=gaianofc";
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -122,7 +125,7 @@ public class GalleryFragment extends Fragment {
                         File f = new File(imgDecodableString);
 
                         Future uploading = Ion.with(getActivity())
-                                .load("http://seodongmin.com:10900/B/upload")
+                                .load(urlPrefix + "/B/upload" + urlTestUserQuery)
                                 .setMultipartFile("image", f)
                                 .asString().setCallback(new FutureCallback<String>() {
                                     @Override
@@ -142,7 +145,7 @@ public class GalleryFragment extends Fragment {
                         outStream.close();
                         f = new File(extSD, name);
                         Future uploadingsmall = Ion.with(getActivity())
-                                .load("http://seodongmin.com:10900/B/uploadsmall")
+                                .load(urlPrefix + "/B/uploadsmall" + urlTestUserQuery)
                                 .setMultipartFile("image", f)
                                 .asString().setCallback(new FutureCallback<String>() {
                                     @Override
@@ -264,7 +267,7 @@ public class GalleryFragment extends Fragment {
     }
 
     private JSONArray getImages(String fid){
-        String urlString = "http://seodongmin.com:10900/B/images";
+        String urlString = urlPrefix + "/B/images" + urlTestUserQuery;
 
 
 
