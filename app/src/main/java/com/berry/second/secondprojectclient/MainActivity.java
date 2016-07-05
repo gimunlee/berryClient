@@ -5,6 +5,9 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 public class MainActivity extends AppCompatActivity {
 
     FragmentTabHost mTabHost;
@@ -12,6 +15,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
 
         mTabHost=(FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this,getSupportFragmentManager(),android.R.id.tabcontent);

@@ -1,6 +1,7 @@
 package com.berry.second.secondprojectclient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,8 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.berry.second.secondprojectclient.person.PersonListViewAdapter;
-import com.berry.second.secondprojectclient.person.PersonHelper;
+import com.berry.second.secondprojectclient.contact.ContactListViewAdapter;
+import com.berry.second.secondprojectclient.contact.ContactHelper;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 ///**
 // * A fragment representing a list of Items.
@@ -21,10 +31,13 @@ import com.berry.second.secondprojectclient.person.PersonHelper;
 // * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
 // * interface.
 // */
-public class ContactFragment extends Fragment /*implements PersonListViewAdapter.onPersonAdapterListener*/ {
+public class ContactFragment extends Fragment /*implements ContactListViewAdapter.onPersonAdapterListener*/ {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
+
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
 //    private OnListFragmentInteractionListener mListener;
 
     /**
@@ -51,8 +64,21 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        Log.d("gimun","PersonHelper.setup");
-        PersonHelper.setup(this.getContext());
+        Log.d("gimun","ContactHelper.setup");
+        ContactHelper.setup(this.getContext());
+        callbackManager = CallbackManager.Factory.create();
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                Log.d("gimun","new token "+currentAccessToken.toString());
+            }
+        };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -69,43 +95,43 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new PersonListViewAdapter(context,PersonHelper.mItems/*, mListener*/));
-            PersonHelper.setAdapter((PersonListViewAdapter)recyclerView.getAdapter());
+            recyclerView.setAdapter(new ContactListViewAdapter(context, ContactHelper.mItems/*, mListener*/));
+            ContactHelper.setAdapter((ContactListViewAdapter)recyclerView.getAdapter());
 //        }
-        {
-            Button button = (Button) view.findViewById(R.id.nowButton);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PersonHelper.addItemWithTime();
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                }
-            });
-        }
-        {
-            Button button = (Button) view.findViewById(R.id.saveButton);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PersonHelper.writeCurrentList();
-                }
-            });
-        }
-        {
-            Button button = (Button) view.findViewById(R.id.refreshButton);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PersonHelper.updateFromJson();
-                }
-            });
-        }
+//        {
+//            Button button = (Button) view.findViewById(R.id.nowButton);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ContactHelper.addItemWithTime();
+//                    recyclerView.getAdapter().notifyDataSetChanged();
+//                }
+//            });
+//        }
+//        {
+//            Button button = (Button) view.findViewById(R.id.saveButton);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ContactHelper.postToFile();
+//                }
+//            });
+//        }
+//        {
+//            Button button = (Button) view.findViewById(R.id.refreshButton);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ContactHelper.updateFromFile();
+//                }
+//            });
+//        }
         {
             Button button = (Button) view.findViewById(R.id.clearButton);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PersonHelper.clearList();
+                    ContactHelper.clearList();
                 }
             });
         }
@@ -115,7 +141,49 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
                 @Override
                 public void onClick(View v) {
                     Log.d("gimun","update");
-                    new PersonHelper().updateFromServer();
+                    new ContactHelper().updateFromServer();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.postButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("gimun","post");
+                    new ContactHelper().postToServer();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.importContactsButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("gimun","import");
+                    ContactHelper.importLocalContacts();
+                }
+            });
+        }
+        {
+            final LoginButton loginButton=(LoginButton) view.findViewById(R.id.loginButton);
+            loginButton.setReadPermissions("user_friends");
+            loginButton.setFragment(this);
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    AccessToken token=AccessToken.getCurrentAccessToken();
+                    Log.d("gimun", "user id : " + token.getUserId());
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+
                 }
             });
         }
@@ -152,7 +220,7 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
 //     */
 //    public interface OnListFragmentInteractionListener {
 //        // TODO: Update argument type and name
-//        void onListFragmentInteraction(Person item);
+//        void onListFragmentInteraction(Contact item);
 //    }
     public void onPersonSelected() {
     }

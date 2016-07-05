@@ -1,4 +1,4 @@
-package com.berry.second.secondprojectclient.person;
+package com.berry.second.secondprojectclient.contact;
 
 import android.content.Context;
 import android.os.Build;
@@ -14,16 +14,16 @@ import com.berry.second.secondprojectclient.R;
 import java.util.List;
 
 ///**
-// * {@link RecyclerView.Adapter} that can display a {@link Person} and makes a call to the
+// * {@link RecyclerView.Adapter} that can display a {@link Contact} and makes a call to the
 // * specified {@link OnListFragmentInteractionListener}.
 // * TODO: Replace the implementation with code for your data type.
 // */
-public class PersonListViewAdapter extends RecyclerView.Adapter<PersonListViewAdapter.ViewHolder> {
+public class ContactListViewAdapter extends RecyclerView.Adapter<ContactListViewAdapter.ViewHolder> {
 
     private Context mContext;
-    private final List<PersonHelper.Person> mValues;
+    private final List<ContactHelper.Contact> mValues;
 
-    public PersonListViewAdapter(Context context, List<PersonHelper.Person> items) {
+    public ContactListViewAdapter(Context context, List<ContactHelper.Contact> items) {
         mContext = context;
         mValues = items;
     }
@@ -37,7 +37,7 @@ public class PersonListViewAdapter extends RecyclerView.Adapter<PersonListViewAd
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        PersonHelper.Person value=mValues.get(position);
+        ContactHelper.Contact value=mValues.get(position);
 
         holder.mItem = value;
 
@@ -76,7 +76,7 @@ public class PersonListViewAdapter extends RecyclerView.Adapter<PersonListViewAd
         public final TextView mEmailView;
         public final TextView mPhoneView;
 
-        public PersonHelper.Person mItem;
+        public ContactHelper.Contact mItem;
 
         public ViewHolder(View view) {
             super(view);
