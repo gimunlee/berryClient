@@ -82,15 +82,15 @@ public class ContactFragment extends Fragment /*implements ContactListViewAdapte
                 }
             });
         }
-        {
-            Button button = (Button) view.findViewById(R.id.saveButton);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ContactHelper.postToFile();
-                }
-            });
-        }
+//        {
+//            Button button = (Button) view.findViewById(R.id.saveButton);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ContactHelper.postToFile();
+//                }
+//            });
+//        }
         {
             Button button = (Button) view.findViewById(R.id.refreshButton);
             button.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +126,16 @@ public class ContactFragment extends Fragment /*implements ContactListViewAdapte
                 public void onClick(View v) {
                     Log.d("gimun","post");
                     new ContactHelper().postToServer();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.importContactsButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("gimun","import");
+                    ContactHelper.importLocalContacts();
                 }
             });
         }

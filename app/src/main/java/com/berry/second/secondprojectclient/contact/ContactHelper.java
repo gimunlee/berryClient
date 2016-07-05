@@ -1,6 +1,9 @@
 package com.berry.second.secondprojectclient.contact;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -30,6 +33,7 @@ public class ContactHelper {
     private static final String jsonPath = "contact_sample.json";
     private static final String port = "10012";
     private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
+    private static final String urlTestUserQuery = "?fid=gaianofc";
 
     // Context and view
     private static Context mContext;
@@ -90,6 +94,7 @@ public class ContactHelper {
 
         public void run() {
             try {
+                Log.d("gimun","posing json : " + mJson);
                 URL url = new URL(mUrlStr);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
@@ -126,7 +131,7 @@ public class ContactHelper {
         }
     }
     public void postToServer() {
-        PostThread postThread = new PostThread(urlPrefix+"/A/contacts",createJson());
+        PostThread postThread = new PostThread(urlPrefix+"/A/contacts"+urlTestUserQuery,createJson());
         synchronized (postThread) {
             postThread.start();
             try {
@@ -184,7 +189,7 @@ public class ContactHelper {
         }
     }
     public void updateFromServer() {
-        GetThread getThread = new GetThread(urlPrefix+"/A/contacts");
+        GetThread getThread = new GetThread(urlPrefix+"/A/contacts"+urlTestUserQuery);
         synchronized (getThread) {
             getThread.start();
             try {
@@ -237,6 +242,104 @@ public class ContactHelper {
         importFromJson(readJsonFromFile());
         if(mAdapter!=null)
             mAdapter.notifyDataSetChanged();
+    }
+
+    //Importing
+    private static boolean isPhone(String str) {
+        return str.length()>4 && str.matches("^[0-9|+|-]*$");
+    }
+    public static void importLocalContacts()
+    {
+        HashMap<String , JSONObject> temp = new HashMap<String,JSONObject>();
+        ArrayList<JSONObject> res = new ArrayList<JSONObject>();
+        ContentResolver cr = mContext.getContentResolver();
+        String order = "CASE WHEN "
+                + ContactsContract.Contacts.DISPLAY_NAME
+                + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
+                + ContactsContract.Contacts.DISPLAY_NAME
+                + ", "
+                + ContactsContract.CommonDataKinds.Email.DATA
+                + " COLLATE NOCASE";
+        String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
+
+        String[] projection = new String[] { ContactsContract.Data.CONTACT_ID,
+                ContactsContract.Data.DISPLAY_NAME,
+                ContactsContract.Data.PHOTO_ID,
+                ContactsContract.Data.MIMETYPE,
+                ContactsContract.Data.DATA2, // type
+                ContactsContract.Data.DATA1  // phone.number, organization.company
+        };
+
+        Cursor mCursor = mContext.getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI,
+                projection,
+                ContactsContract.Data.MIMETYPE +"='"+ ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE +"' or " +
+                        ContactsContract.Data.MIMETYPE +"='"+ ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE +"'",
+                null,
+                ContactsContract.Data.DISPLAY_NAME+","+ContactsContract.Data._ID+" COLLATE LOCALIZED ASC");
+
+        int idIdx = mCursor.getColumnIndex( ContactsContract.Data.CONTACT_ID);
+        int nameIdx = mCursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME);
+        int numIdx = mCursor.getColumnIndex(ContactsContract.Data.DATA1);
+        int emailIdx = mCursor.getColumnIndex(ContactsContract.Data.DATA2);
+        int photoIdx = mCursor.getColumnIndex(ContactsContract.Data.PHOTO_ID);
+        if(mCursor.moveToFirst()) {
+            String id = " ", name = " ", num = " ", email=" ", photo=" ";
+            do {
+                id = " "; name = " "; num = " "; email=" "; photo=" ";
+                if (idIdx != -1) id = mCursor.getString(idIdx);
+                if (nameIdx != -1) name = mCursor.getString(nameIdx);
+                if (numIdx != -1) num = mCursor.getString(numIdx);
+                if (emailIdx != -1) email = mCursor.getString(emailIdx);
+                if (photoIdx != -1) photo = mCursor.getString(photoIdx);
+                if(temp.containsKey(id)){
+                    JSONObject now = temp.get(id);try{
+                        if (id!=null &&!id.equals(" ") && !now.has("id")) now.put("id", id);
+                        if (name!=null && !name.equals(" ")&& !now.has("name")) now.put("name", name);
+                        if (num!=null && !num.equals(" ")) {
+                            if(isPhone(num) && !now.has("phone")) now.put("phone",num);
+                            else if(!isPhone(num) && !now.has("email")) now.put("email",num);
+                        }
+                        if (photo!=null && !photo.equals(" ") && !now.has("photo")) now.put("photo", photo);}catch(Exception e){
+//                        debug("err1"+e.toString());
+                    }
+                } else {
+                    JSONObject now = new JSONObject();
+                    try {
+                        if (!id.equals(" ")) now.put("id", id);
+                        if (!name.equals(" ")) now.put("name", name);
+                        if (!num.equals(" ")) {
+                            if(isPhone(num)) now.put("phone",num);
+                            else now.put("email",num);
+                        }
+                        if (photo!=null && !photo.equals(" ")) now.put("photo", photo);
+                    } catch(Exception e){
+//                        debug(e.toString());
+                    }
+                    temp.put(id,now);
+                }
+//                Log.d("gimun",""+id+name+num+email+photo);
+            } while (mCursor.moveToNext());
+        }
+        mCursor.close();
+        for(Map.Entry<String, JSONObject> i : temp.entrySet())
+        {
+            Log.d("gimun",""+i.getKey().toString() + i.getValue().toString());
+            String name="empty", email="empty", phone="empty";
+            JSONObject object=i.getValue();
+            try {
+                if (object.has("name")) name = object.get("name").toString();
+                if(object.has("email")) email = object.get("email").toString();
+                if(object.has("phone")) phone = object.get("phone").toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            addItem(name,email,phone);
+
+//            res.add(i.getValue());
+        }
+//        return res;
     }
 
     // Setting members
