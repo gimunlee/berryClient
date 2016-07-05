@@ -30,7 +30,7 @@ import java.util.Map;
 public class ContactHelper {
 
     // Contants
-    private static final String jsonPath = "contact_sample.json";
+    private static final String jsonPath = "contact.json";
     private static final String port = "10012";
     private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
     private static final String urlTestUserQuery = "?fid=gaianofc";
@@ -220,10 +220,10 @@ public class ContactHelper {
                 inputStream.close();
                 return stringBuilder.toString();
             } else
-                return null;
+                return "";
         } catch (IOException ex) {
             ex.printStackTrace();
-            return null;
+            return "";
         }
     }
     public static void postToFile() {
@@ -239,6 +239,8 @@ public class ContactHelper {
     }
     public static void updateFromFile() {
         clearList();
+        Log.d("gimun","jsonFromFile");
+        Log.d("gimun",readJsonFromFile());
         importFromJson(readJsonFromFile());
         if(mAdapter!=null)
             mAdapter.notifyDataSetChanged();
@@ -365,6 +367,8 @@ public class ContactHelper {
             mAdapter.notifyItemInserted(pos);
     }
     public static boolean importFromJson(String json) {
+        if(json=="")
+            return false;
         try {
             JSONArray array = new JSONArray(json);
             for (int i = 0; i < array.length(); i++) {
