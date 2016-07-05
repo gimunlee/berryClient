@@ -9,14 +9,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 import android.support.design.widget.FloatingActionButton;
@@ -42,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -92,26 +97,10 @@ public class GalleryFragment extends Fragment {
         try {
             // When an Image is picked
             if(requestCode == 2){
-                gridView = (GridView) getView().findViewById(R.id.gridView);
-                gridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, getData());
-                gridView.setAdapter(gridAdapter);
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                        ImageItem item = (ImageItem) parent.getItemAtPosition(position);
-
-                        //Create intent
-                        Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                        intent.putExtra("title", item.getTitle());
-                        intent.putExtra("image", item.getImage());
-                        intent.putExtra("position", item.getPosition());
-
-                        //Start details activity
-                        startActivityForResult(intent,2);
-                    }
-                });
+                fragmentinit();
             }
             else {
-                if (requestCode == RESULT_LOAD_IMG && resultCode == Activity.RESULT_OK && null != data) {
+                if (requestCode == RESULT_LOAD_IMG ) {
                     // Get the Image from data
 
                     Uri selectedImage = data.getData();
@@ -128,40 +117,46 @@ public class GalleryFragment extends Fragment {
                     cursor.close();
 
                     try {
-                        FileOutputStream outputStream;
-                        outputStream = getActivity().openFileOutput("mygallery.txt", getContext().MODE_APPEND);
-                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
-                        writer.write(imgDecodableString);
-                        writer.write("\n");
-                        writer.close();
-                        outputStream.close();
-
                         //////////////////////////////////////////////////////////////////////////////////////////////
 
                         File f = new File(imgDecodableString);
 
                         Future uploading = Ion.with(getActivity())
-                                .load("http://seodongmin.com:10900/upload")
+                                .load("http://seodongmin.com:10900/B/upload")
                                 .setMultipartFile("image", f)
-                                .asString();
+                                .asString().setCallback(new FutureCallback<String>() {
+                                    @Override
+                                    public void onCompleted(Exception ex, String iv) {
+                                    }
+
+                                });
+
+                        String extSD = Environment.getExternalStorageDirectory().toString();
+                        String name = imgDecodableString.split("/")[imgDecodableString.split("/").length-1].split("[.]")[0] + ".jpg";
+                        OutputStream outStream = null;
+                        File file = new File(extSD, name);
+                        Bitmap fibi = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(imgDecodableString),300,300,true);
+                        outStream = new FileOutputStream(file);
+                        fibi.compress(Bitmap.CompressFormat.JPEG,100,outStream);
+                        outStream.flush();
+                        outStream.close();
+                        f = new File(extSD, name);
+                        Future uploadingsmall = Ion.with(getActivity())
+                                .load("http://seodongmin.com:10900/B/uploadsmall")
+                                .setMultipartFile("image", f)
+                                .asString().setCallback(new FutureCallback<String>() {
+                                    @Override
+                                    public void onCompleted(Exception ex, String iv) {
+                                        fragmentinit();
+                                    }
+
+                                });
                         //////////////////////////////////////////////////////////////////////////////////////////////
+                        //Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+                        Thread.sleep(1000);
+                        fragmentinit();
 
-                        gridView = (GridView) getView().findViewById(R.id.gridView);
-                        gridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, getData());
-                        gridView.setAdapter(gridAdapter);
-                        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
 
-                                //Create intent
-                                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                                intent.putExtra("title", item.getTitle());
-                                intent.putExtra("image", item.getImage());
-
-                                //Start details activity
-                                startActivityForResult(intent, 2);
-                            }
-                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -190,7 +185,8 @@ public class GalleryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -241,7 +237,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 loadImagefromGallery(view);
-
             }
         });
 
@@ -252,23 +247,27 @@ public class GalleryFragment extends Fragment {
         final ArrayList<ImageItem> imageItems = new ArrayList<>();
 
         try {
-            FileInputStream fis = getActivity().openFileInput("mygallery.txt");
-            BufferedReader reader= new BufferedReader(new InputStreamReader(fis));
-            String s;
-            for(int i=0; (s = reader.readLine()) != null; i++){
-                imageItems.add(new ImageItem(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(s),300,300,true), s, i));
+
+            JSONArray images = getImages(null);
+
+            for(int i=0; i<images.length(); i++){
+                String s = images.getJSONObject(i).getString("url");
+                URL url = new URL(s);
+
+                imageItems.add(new ImageItem(Bitmap.createScaledBitmap(BitmapFactory.decodeStream(url.openConnection().getInputStream()),300,300,true), s, i));
             }
-            reader.close();
-            fis.close();
         }catch(Exception e){
 
         }
+
         return imageItems;
     }
 
+    private JSONArray getImages(String fid){
+        String urlString = "http://seodongmin.com:10900/B/images";
 
-    private String getBooks(){
-        String urlString = "http://52.78.67.28:10900/api/books";
+
+
         try {
             // call API by using HTTPURLConnection
             URL url = new URL(urlString);
@@ -278,8 +277,8 @@ public class GalleryFragment extends Fragment {
 
             // parse JSON
 
-            //return json.getJSONObject(0).getString("title");
-            return "!";
+            //return json.getJSONArray("images");
+            return json;
 
         }catch(MalformedURLException e){
             System.err.println("Malformed URL");
@@ -295,6 +294,7 @@ public class GalleryFragment extends Fragment {
             return null;
         }
     }
+
     private static String getStringFromInputStream(InputStream is) {
 
         BufferedReader br = null;
@@ -323,4 +323,27 @@ public class GalleryFragment extends Fragment {
         return sb.toString();
 
     }
+
+    private void fragmentinit(){
+        gridView = (GridView) getView().findViewById(R.id.gridView);
+        gridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, getData());
+        gridView.setAdapter(gridAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
+
+                //Create intent
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                intent.putExtra("title", item.getTitle());
+                intent.putExtra("image", item.getImage());
+
+                //Start details activity
+                startActivityForResult(intent, 2);
+            }
+        });
+    }
+
+
+
+
 }
