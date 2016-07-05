@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.berry.second.secondprojectclient.person.PersonListViewAdapter;
-import com.berry.second.secondprojectclient.person.PersonHelper;
+import com.berry.second.secondprojectclient.contact.ContactListViewAdapter;
+import com.berry.second.secondprojectclient.contact.ContactHelper;
 
 ///**
 // * A fragment representing a list of Items.
@@ -21,7 +21,7 @@ import com.berry.second.secondprojectclient.person.PersonHelper;
 // * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
 // * interface.
 // */
-public class ContactFragment extends Fragment /*implements PersonListViewAdapter.onPersonAdapterListener*/ {
+public class ContactFragment extends Fragment /*implements ContactListViewAdapter.onPersonAdapterListener*/ {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
@@ -51,8 +51,8 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        Log.d("gimun","PersonHelper.setup");
-        PersonHelper.setup(this.getContext());
+        Log.d("gimun","ContactHelper.setup");
+        ContactHelper.setup(this.getContext());
     }
 
     @Override
@@ -69,15 +69,15 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new PersonListViewAdapter(context,PersonHelper.mItems/*, mListener*/));
-            PersonHelper.setAdapter((PersonListViewAdapter)recyclerView.getAdapter());
+            recyclerView.setAdapter(new ContactListViewAdapter(context, ContactHelper.mItems/*, mListener*/));
+            ContactHelper.setAdapter((ContactListViewAdapter)recyclerView.getAdapter());
 //        }
         {
             Button button = (Button) view.findViewById(R.id.nowButton);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PersonHelper.addItemWithTime();
+                    ContactHelper.addItemWithTime();
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
             });
@@ -87,7 +87,7 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PersonHelper.writeCurrentList();
+                    ContactHelper.postToFile();
                 }
             });
         }
@@ -96,7 +96,7 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PersonHelper.updateFromJson();
+                    ContactHelper.updateFromFile();
                 }
             });
         }
@@ -105,7 +105,7 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PersonHelper.clearList();
+                    ContactHelper.clearList();
                 }
             });
         }
@@ -115,7 +115,17 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
                 @Override
                 public void onClick(View v) {
                     Log.d("gimun","update");
-                    new PersonHelper().updateFromServer();
+                    new ContactHelper().updateFromServer();
+                }
+            });
+        }
+        {
+            Button button = (Button) view.findViewById(R.id.postButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("gimun","post");
+                    new ContactHelper().postToServer();
                 }
             });
         }
@@ -152,7 +162,7 @@ public class ContactFragment extends Fragment /*implements PersonListViewAdapter
 //     */
 //    public interface OnListFragmentInteractionListener {
 //        // TODO: Update argument type and name
-//        void onListFragmentInteraction(Person item);
+//        void onListFragmentInteraction(Contact item);
 //    }
     public void onPersonSelected() {
     }
