@@ -330,7 +330,7 @@ public class GalleryFragment extends Fragment {
 
     }
 
-    private void fragmentinit(){
+    public void fragmentinit(){
         gridView = (GridView) getView().findViewById(R.id.gridView);
         gridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, getData());
         gridView.setAdapter(gridAdapter);

@@ -64,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupForCurrentUser() {
+        Log.d("gimun","setup!!!!!!!!!!!!!!!");
+        GalleryFragment galleryFragment = (GalleryFragment)getSupportFragmentManager().findFragmentByTag("gallery");
+        if(galleryFragment!=null)
+            galleryFragment.fragmentinit();
+
         if(FacebookHelper.isLogon()) {
             urlTestUserQuery = "?fid=" + FacebookHelper.mUserEmail;
             mActionBar.setTitle("Hello, " + FacebookHelper.mUserName);
