@@ -17,6 +17,8 @@ out/
 .gradle/
 /*/build/
 build/
+app/build/
+*/build/
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
 
