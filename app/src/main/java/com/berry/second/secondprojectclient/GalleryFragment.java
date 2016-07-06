@@ -69,9 +69,8 @@ public class GalleryFragment extends Fragment {
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
     int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 202;
-    private static final String port = "10900";
-    private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
-    private static final String urlTestUserQuery = "?fid=gaianofc";
+    private static final String urlPrefix = MainActivity.urlPrefix;
+    private static final String urlTestUserQuery = MainActivity.urlTestUserQuery;
 
     public GalleryFragment() {
         // Required empty public constructor

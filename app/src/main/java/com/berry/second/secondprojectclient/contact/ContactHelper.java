@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.berry.second.secondprojectclient.MainActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,9 +33,8 @@ public class ContactHelper {
 
     // Contants
     private static final String jsonPath = "contact.json";
-    private static final String port = "10900";
-    private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
-    private static final String urlTestUserQuery = "?fid=gaianofc";
+    private static final String urlPrefix = MainActivity.urlPrefix;
+    private static final String urlTestUserQuery = MainActivity.urlTestUserQuery;
 
     // Context and view
     private static Context mContext;
