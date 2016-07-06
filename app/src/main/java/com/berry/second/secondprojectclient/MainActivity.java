@@ -64,15 +64,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupForCurrentUser() {
-        Log.d("gimun","setup!!!!!!!!!!!!!!!");
-        GalleryFragment galleryFragment = (GalleryFragment)getSupportFragmentManager().findFragmentByTag("gallery");
-        if(galleryFragment!=null)
-            galleryFragment.fragmentinit();
+        Log.d("setup","setup!!!!!!!!!!!!!!!");
 
         if(FacebookHelper.isLogon()) {
             urlTestUserQuery = "?fid=" + FacebookHelper.mUserEmail;
-            mActionBar.setTitle("Hello, " + FacebookHelper.mUserName);
-            if (mViewSwitcher.getNextView() == mTabHost)
+            if(mActionBar!=null)
+                mActionBar.setTitle("Hello, " + FacebookHelper.mUserName);
+            if (mViewSwitcher!=null && mViewSwitcher.getNextView() == mTabHost)
                 mViewSwitcher.showNext();
         }
         else {
@@ -81,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
                 mActionBar.setTitle("Please sign in");
             if(mViewSwitcher!=null && mViewSwitcher.getNextView() != mTabHost)
                 mViewSwitcher.showNext();
+        }
+        GalleryFragment galleryFragment = (GalleryFragment)getSupportFragmentManager().findFragmentByTag("gallery");
+        if(galleryFragment!=null) {
+            galleryFragment.fragmentinit();
         }
     }
 }

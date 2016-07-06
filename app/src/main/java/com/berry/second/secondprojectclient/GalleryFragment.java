@@ -331,6 +331,9 @@ public class GalleryFragment extends Fragment {
     }
 
     public void fragmentinit(){
+        Log.d("setup","fragmentInit");
+        urlTestUserQuery = MainActivity.urlTestUserQuery;
+        Log.d("setup","new query : " + urlTestUserQuery);
         gridView = (GridView) getView().findViewById(R.id.gridView);
         gridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, getData());
         gridView.setAdapter(gridAdapter);

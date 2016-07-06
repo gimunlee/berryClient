@@ -138,6 +138,7 @@ public class FacebookHelper {
         updateUserEmail();
         if(mActivity!=null)
             mActivity.setupForCurrentUser();
+        Log.d("setup","update for new query : " + MainActivity.urlTestUserQuery);
     }
     public static void setup(MainActivity mainActivity)
     {
