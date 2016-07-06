@@ -40,12 +40,12 @@
         "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.4.0\\res\\drawable-xhdpi-v4\\abc_ic_star_half_black_16dp.png"
     },
     {
-        "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\com_facebook_tooltip_black_topnub.png",
-        "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.13.2\\res\\drawable-xhdpi-v4\\com_facebook_tooltip_black_topnub.png"
-    },
-    {
         "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\com_facebook_tooltip_black_xout.png",
         "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.13.2\\res\\drawable-xhdpi-v4\\com_facebook_tooltip_black_xout.png"
+    },
+    {
+        "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\com_facebook_tooltip_black_topnub.png",
+        "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.13.2\\res\\drawable-xhdpi-v4\\com_facebook_tooltip_black_topnub.png"
     },
     {
         "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png",

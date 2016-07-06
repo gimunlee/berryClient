@@ -168,12 +168,12 @@
         "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.13.2\\res\\drawable-mdpi-v4\\com_facebook_tooltip_blue_topnub.png"
     },
     {
-        "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\abc_list_focused_holo.9.png",
-        "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.4.0\\res\\drawable-mdpi-v4\\abc_list_focused_holo.9.png"
-    },
-    {
         "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\abc_ic_star_black_16dp.png",
         "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.4.0\\res\\drawable-mdpi-v4\\abc_ic_star_black_16dp.png"
+    },
+    {
+        "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\abc_list_focused_holo.9.png",
+        "source": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.4.0\\res\\drawable-mdpi-v4\\abc_list_focused_holo.9.png"
     },
     {
         "merged": "C:\\Users\\q\\AndroidStudioProjects\\SecondProjectClient\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_delete_white_24dp.png",
