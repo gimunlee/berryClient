@@ -235,13 +235,20 @@ public class GalleryFragment extends Fragment {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button button=(Button) rootView.findViewById(R.id.button);
+        button.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadImagefromGallery(view);
             }
-        });
+        }));
+//        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                loadImagefromGallery(view);
+//            }
+//        });
 
         return rootView;
     }

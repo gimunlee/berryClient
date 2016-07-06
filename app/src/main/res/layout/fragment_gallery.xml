@@ -17,14 +17,21 @@
         android:focusable="true"
         android:clickable="true"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_add_white_18dp"
-        android:layout_alignBottom="@+id/gridView"
-        android:layout_alignRight="@+id/gridView"
-        android:layout_alignEnd="@+id/gridView" />
+        android:text="New Button"
+        android:id="@+id/button"
+        android:layout_gravity="bottom|right" />
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end|bottom"-->
+        <!--android:src="@drawable/ic_add_white_18dp"-->
+        <!--android:layout_alignBottom="@+id/gridView"-->
+        <!--android:layout_alignRight="@+id/gridView"-->
+        <!--android:layout_alignEnd="@+id/gridView" />-->
 
 </FrameLayout>
