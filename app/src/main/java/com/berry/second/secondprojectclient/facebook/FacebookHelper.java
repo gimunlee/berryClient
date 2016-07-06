@@ -113,6 +113,7 @@ public class FacebookHelper {
                 mUserToken = AccessToken.getCurrentAccessToken();
                 Log.d("gimun", "login success. user id : " + mUserToken.getUserId());
                 Log.d("gimun", "success, " + updateUserName());
+                MainActivity.urlTestUserQuery = "?fid=" + FacebookHelper.mUserName;
             }
 
             @Override
