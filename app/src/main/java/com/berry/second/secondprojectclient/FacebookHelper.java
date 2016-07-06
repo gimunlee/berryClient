@@ -1,11 +1,9 @@
-package com.berry.second.secondprojectclient.facebook;
+package com.berry.second.secondprojectclient;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.util.Log;
 
-import com.berry.second.secondprojectclient.MainActivity;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -21,7 +19,6 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 
 /**
  * Created by q on 2016-07-06.
@@ -29,6 +26,7 @@ import java.util.Arrays;
 public class FacebookHelper {
     public static String mUserId = "";
     public static AccessToken mUserToken;
+    public static String mUserEmail=null;
     public static String mUserName = null;
 
     public static boolean isLogon() {
@@ -83,6 +81,48 @@ public class FacebookHelper {
             return mUserName;
         }
     }
+    private static String updateUserEmail() {
+        if (mUserToken == null)
+            return "";
+        Log.d("request", "update email starts");
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (mUserToken) {
+                    GraphRequest request = GraphRequest.newMeRequest(mUserToken, new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            try {
+                                mUserEmail = object.getString("email");
+//                                Log.d("gimun", "json name : " + object.getString("name"));
+//                                Log.d("request", "updated. your name : " + mUserName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "email");
+                    request.setParameters(parameters);
+                    request.executeAndWait();
+//                    Log.d("request", "right after request.executeAndWait()");
+                    mUserToken.notify();
+                }
+            }
+        });
+        synchronized (mUserToken) {
+            t.start();
+            try {
+//                Log.d("request", "waiting");
+                mUserToken.wait();
+//                Log.d("request", "wait finished");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return mUserEmail;
+        }
+    }
 
     private static MainActivity mActivity;
     private static CallbackManager callbackManager;
@@ -113,7 +153,9 @@ public class FacebookHelper {
                 mUserToken = AccessToken.getCurrentAccessToken();
                 Log.d("gimun", "login success. user id : " + mUserToken.getUserId());
                 Log.d("gimun", "success, " + updateUserName());
-                MainActivity.urlTestUserQuery = "?fid=" + FacebookHelper.mUserName;
+                Log.d("gimun", "success, email : " + updateUserEmail());
+//                MainActivity.urlTestUserQuery = "?fid=" + mUserName;
+                MainActivity.urlTestUserQuery = "?fid=" + mUserEmail;
             }
 
             @Override
@@ -130,6 +172,7 @@ public class FacebookHelper {
 
     public static void setupLoginButton(LoginButton button) {
         button.setReadPermissions("user_friends");
+        button.setReadPermissions("email");
 //        button.setPublishPermissions(Arrays.asList("user_friends", "email"));
         button.registerCallback(getCallBackManager(), getLoginCallback());
     }

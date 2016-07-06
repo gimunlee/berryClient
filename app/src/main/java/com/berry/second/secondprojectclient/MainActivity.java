@@ -1,14 +1,12 @@
 package com.berry.second.secondprojectclient;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ViewSwitcher;
 
-import com.berry.second.secondprojectclient.facebook.FacebookHelper;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
 
@@ -78,4 +76,6 @@ public class MainActivity extends AppCompatActivity {
             mViewSwitcher.showNext();
         }
     }
+
+
 }
