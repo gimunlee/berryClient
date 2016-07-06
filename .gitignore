@@ -19,6 +19,7 @@ out/
 build/
 app/build/
 */build/
+**/strings.xml
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
 
