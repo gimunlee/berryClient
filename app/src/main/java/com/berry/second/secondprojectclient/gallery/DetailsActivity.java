@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.berry.second.secondprojectclient.MainActivity;
 import com.berry.second.secondprojectclient.R;
 import com.koushikdutta.async.http.BasicNameValuePair;
 import com.koushikdutta.async.http.NameValuePair;
@@ -43,14 +44,14 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by q on 2016-06-29.
  */
 public class DetailsActivity extends ActionBarActivity {
-    private static final String port = "10900";
-    private static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
-    private static final String urlTestUserQuery = "?fid=gaianofc";
+    private static String urlPrefix = MainActivity.urlPrefix;
+    private static String urlTestUserQuery = MainActivity.urlTestUserQuery;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity);
-
+        urlPrefix = MainActivity.urlPrefix;
+        urlTestUserQuery = MainActivity.urlTestUserQuery;
         final String storageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         final String imageurl_o = getIntent().getStringExtra("title");
         final String imageurl = imageurl_o.replace("/smallimages", "/images");

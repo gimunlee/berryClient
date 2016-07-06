@@ -69,8 +69,8 @@ public class GalleryFragment extends Fragment {
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
     int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 202;
-    private static final String urlPrefix = MainActivity.urlPrefix;
-    private static final String urlTestUserQuery = MainActivity.urlTestUserQuery;
+    private static String urlPrefix = MainActivity.urlPrefix;
+    private static String urlTestUserQuery = MainActivity.urlTestUserQuery;
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -126,12 +126,7 @@ public class GalleryFragment extends Fragment {
                         Future uploading = Ion.with(getActivity())
                                 .load(urlPrefix + "/B/upload" + urlTestUserQuery)
                                 .setMultipartFile("image", f)
-                                .asString().setCallback(new FutureCallback<String>() {
-                                    @Override
-                                    public void onCompleted(Exception ex, String iv) {
-                                    }
-
-                                });
+                                .asString();
 
                         String extSD = Environment.getExternalStorageDirectory().toString();
                         String name = imgDecodableString.split("/")[imgDecodableString.split("/").length-1].split("[.]")[0] + ".jpg";
@@ -187,6 +182,8 @@ public class GalleryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        urlPrefix = MainActivity.urlPrefix;
+        urlTestUserQuery = MainActivity.urlTestUserQuery;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)

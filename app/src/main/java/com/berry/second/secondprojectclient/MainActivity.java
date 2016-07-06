@@ -13,7 +13,7 @@ import com.facebook.login.widget.LoginButton;
 public class MainActivity extends AppCompatActivity {
     public static final String port = "10900";
     public static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
-    public static String urlTestUserQuery = "?fid=" + FacebookHelper.mUserName;
+    public static String urlTestUserQuery = "?fid=" + FacebookHelper.mUserEmail;
     android.support.v7.app.ActionBar mActionBar;
     ViewSwitcher mViewSwitcher;
     FragmentTabHost mTabHost;
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookHelper.setup(this);
         setContentView(R.layout.activity_main);
-
+        urlTestUserQuery = "?fid=" + FacebookHelper.mUserEmail;
         mActionBar=getSupportActionBar();
 
         {
