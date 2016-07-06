@@ -9,25 +9,55 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.berry.second.secondprojectclient.MainActivity">
 
-    <android.support.v4.app.FragmentTabHost
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@android:id/tabhost"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0" />
+
+        <ViewSwitcher
+            android:id="@+id/mainViewSwitcher"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"/>
-            <FrameLayout
-                android:id="@android:id/tabcontent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:text="Please login..."
+                android:textSize="22sp" />
+
+            <android.support.v4.app.FragmentTabHost xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@android:id/tabhost"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-        </LinearLayout>
-    </android.support.v4.app.FragmentTabHost>
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TabWidget
+                        android:id="@android:id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom" />
+
+                    <FrameLayout
+                        android:id="@android:id/tabcontent"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </android.support.v4.app.FragmentTabHost>
+        </ViewSwitcher>
+    </LinearLayout>
 </RelativeLayout>

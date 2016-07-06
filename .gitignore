@@ -48,6 +48,10 @@ captures/
 # Signing files
 .signing/
 
+.gradle/
+
+build/
+
 # User-specific configurations
 .idea/libraries/
 .idea/workspace.xml
@@ -60,6 +64,7 @@ captures/
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
+.idea/
 *.iml
 
 # OS-specific files

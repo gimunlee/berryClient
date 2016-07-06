@@ -36,8 +36,6 @@ public class ContactFragment extends Fragment /*implements ContactListViewAdapte
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
 
-    private CallbackManager callbackManager;
-    private AccessTokenTracker accessTokenTracker;
 //    private OnListFragmentInteractionListener mListener;
 
     /**
@@ -66,19 +64,6 @@ public class ContactFragment extends Fragment /*implements ContactListViewAdapte
         }
         Log.d("gimun","ContactHelper.setup");
         ContactHelper.setup(this.getContext());
-        callbackManager = CallbackManager.Factory.create();
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                Log.d("gimun","new token "+currentAccessToken.toString());
-            }
-        };
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -162,28 +147,6 @@ public class ContactFragment extends Fragment /*implements ContactListViewAdapte
                 public void onClick(View v) {
                     Log.d("gimun","import");
                     ContactHelper.importLocalContacts();
-                }
-            });
-        }
-        {
-            final LoginButton loginButton=(LoginButton) view.findViewById(R.id.loginButton);
-            loginButton.setReadPermissions("user_friends");
-            loginButton.setFragment(this);
-            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    AccessToken token=AccessToken.getCurrentAccessToken();
-                    Log.d("gimun", "user id : " + token.getUserId());
-                }
-
-                @Override
-                public void onCancel() {
-
-                }
-
-                @Override
-                public void onError(FacebookException error) {
-
                 }
             });
         }

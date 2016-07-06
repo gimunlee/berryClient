@@ -53,11 +53,5 @@
         android:layout_weight="1"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/fragment_person" />
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0"/>
 
 </LinearLayout>
