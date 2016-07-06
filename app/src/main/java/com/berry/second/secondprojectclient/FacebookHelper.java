@@ -40,8 +40,10 @@ public class FacebookHelper {
     }
 
     private static String updateUserName() {
-        if (mUserToken == null)
+        if(!isLogon()) {
+            mUserName="default";
             return "";
+        }
         Log.d("request", "update starts");
 
         Thread t = new Thread(new Runnable() {
@@ -53,8 +55,6 @@ public class FacebookHelper {
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             try {
                                 mUserName = object.getString("name");
-                                Log.d("gimun", "json name : " + object.getString("name"));
-                                Log.d("request", "updated. your name : " + mUserName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -64,7 +64,6 @@ public class FacebookHelper {
                     parameters.putString("fields", "name");
                     request.setParameters(parameters);
                     request.executeAndWait();
-                    Log.d("request", "right after request.executeAndWait()");
                     mUserToken.notify();
                 }
             }
@@ -72,9 +71,7 @@ public class FacebookHelper {
         synchronized (mUserToken) {
             t.start();
             try {
-                Log.d("request", "waiting");
                 mUserToken.wait();
-                Log.d("request", "wait finished");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -82,8 +79,10 @@ public class FacebookHelper {
         }
     }
     private static String updateUserEmail() {
-        if (mUserToken == null)
+        if(!isLogon()) {
+            mUserEmail="";
             return "";
+        }
         Log.d("request", "update email starts");
 
         Thread t = new Thread(new Runnable() {
@@ -133,8 +132,17 @@ public class FacebookHelper {
 
     private static AccessTokenTracker accessTokenTracker;
 
-    public static void setup(MainActivity mainActivity) {
+    public static void updateWithToken(AccessToken token) {
+        mUserToken=token;
+        updateUserName();
+        updateUserEmail();
+        if(mActivity!=null)
+            mActivity.setupForCurrentUser();
+    }
+    public static void setup(MainActivity mainActivity)
+    {
         mActivity = mainActivity;
+        Log.d("gimun","mActivity : "+mActivity.getClass());
         FacebookSdk.sdkInitialize(mActivity.getApplicationContext());
         AppEventsLogger.activateApp(mActivity.getApplication());
 
@@ -143,19 +151,13 @@ public class FacebookHelper {
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                mActivity.onTokenChanged(currentAccessToken);
+                updateWithToken(currentAccessToken);
             }
         };
 
         loginCallback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                mUserToken = AccessToken.getCurrentAccessToken();
-                Log.d("gimun", "login success. user id : " + mUserToken.getUserId());
-                Log.d("gimun", "success, " + updateUserName());
-                Log.d("gimun", "success, email : " + updateUserEmail());
-//                MainActivity.urlTestUserQuery = "?fid=" + mUserName;
-                MainActivity.urlTestUserQuery = "?fid=" + mUserEmail;
             }
 
             @Override
@@ -166,14 +168,12 @@ public class FacebookHelper {
             public void onError(FacebookException error) {
             }
         };
-
-        mUserToken = AccessToken.getCurrentAccessToken();
+        updateWithToken(AccessToken.getCurrentAccessToken());
     }
 
     public static void setupLoginButton(LoginButton button) {
         button.setReadPermissions("user_friends");
         button.setReadPermissions("email");
-//        button.setPublishPermissions(Arrays.asList("user_friends", "email"));
         button.registerCallback(getCallBackManager(), getLoginCallback());
     }
 

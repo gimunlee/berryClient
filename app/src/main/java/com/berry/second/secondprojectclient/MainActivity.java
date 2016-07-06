@@ -1,6 +1,7 @@
 package com.berry.second.secondprojectclient;
 
 import android.content.Intent;
+import android.hardware.camera2.params.Face;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,8 @@ import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity {
     public static final String port = "10900";
-    public static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:"+port;
-    public static String urlTestUserQuery = "?fid=" + FacebookHelper.mUserName;
+    public static final String urlPrefix = "http://ec2-52-78-67-28.ap-northeast-2.compute.amazonaws.com:" + port;
+    public static String urlTestUserQuery = "?fid=" + "default";
     android.support.v7.app.ActionBar mActionBar;
     ViewSwitcher mViewSwitcher;
     FragmentTabHost mTabHost;
@@ -24,16 +25,14 @@ public class MainActivity extends AppCompatActivity {
         FacebookHelper.setup(this);
         setContentView(R.layout.activity_main);
 
-        mActionBar=getSupportActionBar();
+        mActionBar = getSupportActionBar();
 
         {
-            final LoginButton loginButton=(LoginButton) findViewById(R.id.loginButton);
+            final LoginButton loginButton = (LoginButton) findViewById(R.id.loginButton);
             FacebookHelper.setupLoginButton(loginButton);
-//            loginButton.setReadPermissions("user_friends");
-//            loginButton.registerCallback(FacebookHelper.getCallBackManager(), FacebookHelper.getLoginCallback());
         }
 
-        mViewSwitcher=(ViewSwitcher) findViewById(R.id.mainViewSwitcher);
+        mViewSwitcher = (ViewSwitcher) findViewById(R.id.mainViewSwitcher);
 
         {
             mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                             .setIndicator("Ground", null),
                     GroundFragment.class, null);
         }
-        if(FacebookHelper.isLogon())
+        if (FacebookHelper.isLogon() && mViewSwitcher.getCurrentView() == mTabHost )
             mViewSwitcher.showNext();
     }
 
@@ -64,18 +63,19 @@ public class MainActivity extends AppCompatActivity {
         FacebookHelper.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void onTokenChanged(AccessToken newToken) {
-        if(newToken==null) {
-            Log.d("gimun", "Facebook logout");
-            mActionBar.setTitle("Bye~");
-            mViewSwitcher.showPrevious();
+    public void setupForCurrentUser() {
+        if(FacebookHelper.isLogon()) {
+            urlTestUserQuery = "?fid=" + FacebookHelper.mUserEmail;
+            mActionBar.setTitle("Hello, " + FacebookHelper.mUserName);
+            if (mViewSwitcher.getNextView() == mTabHost)
+                mViewSwitcher.showNext();
         }
         else {
-            Log.d("gimun", "new token " + newToken.getToken());
-            mActionBar.setTitle("Hello, ");
-            mViewSwitcher.showNext();
+            urlTestUserQuery="?fid=" + "default";
+            if(mActionBar!=null)
+                mActionBar.setTitle("Please sign in");
+            if(mViewSwitcher!=null && mViewSwitcher.getNextView() != mTabHost)
+                mViewSwitcher.showNext();
         }
     }
-
-
 }
